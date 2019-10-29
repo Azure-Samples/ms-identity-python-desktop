@@ -12,9 +12,19 @@ The configuration file would look like this:
 
     "username": "your_username@your_tenant.com",
 
-    "scope": ["User.Read"],
+    "password": "This is a sample only. You better NOT persist your password.",
 
-    "password": "This is a sample only. You better NOT persist your password."
+    "scope": ["User.ReadBasic.All"],
+
+        // You can find the other permission names from this document
+
+        // https://docs.microsoft.com/en-us/graph/permissions-reference
+
+    "endpoint": "https://graph.microsoft.com/v1.0/users"
+
+        // You can find more Microsoft Graph API endpoints from Graph Explorer
+
+        // https://developer.microsoft.com/en-us/graph/graph-explorer
 
 }
 
@@ -37,6 +47,8 @@ import json
 import logging
 
 
+
+import requests
 
 import msal
 
@@ -104,13 +116,15 @@ if not result:
 
 if "access_token" in result:
 
-    print(result["access_token"])
+    # Calling graph using the access token
 
-    print(result["token_type"])
+    graph_data = requests.get(  # Use token to call downstream service
 
-    print(result["expires_in"])  # You don't normally need to care about this.
+        config["endpoint"],
 
-                                 # It will be good for at least 5 minutes.
+        headers={'Authorization': 'Bearer ' + result['access_token']},).json()
+
+    print("Graph API call result: %s" % json.dumps(graph_data, indent=2))
 
 else:
 
