@@ -1,0 +1,8 @@
+{
+  "authority": "https://login.microsoftonline.com/organizations",
+  "client_id": "your_client_id",
+  "username": "your_username@your_tenant.com",
+  "scope": ["User.Read"],
+  "password": "This is a sample only. You better NOT persist your password."
+
+}
