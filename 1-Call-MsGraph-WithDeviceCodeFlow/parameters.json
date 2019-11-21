@@ -1,19 +1,6 @@
 {
-
     "authority": "https://login.microsoftonline.com/common",
-
-    "client_id": "your_client_id",
-
-    "scope": ["User.ReadBasic.All"],
-
-        // You can find the other permission names from this document
-
-        // https://docs.microsoft.com/en-us/graph/permissions-reference
-
-    "endpoint": "https://graph.microsoft.com/v1.0/users"
-
-        // You can find more Microsoft Graph API endpoints from Graph Explorer
-
-        // https://developer.microsoft.com/en-us/graph/graph-explorer
-
+    "client_id": "c911c8a1-6a56-4e48-aa9e-d7ae531882d7",
+    "scope": ["User.Read"],
+    "endpoint": "https://graph.microsoft.com/v1.0/me"
 }

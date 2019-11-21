@@ -48,7 +48,7 @@ To run this sample, you'll need:
 From your shell or command line:
 
 ```Shell
-git clone https://github.com/Azure-Samples/ms-identity-python-devicecodeflow.git
+git clone https://github.com/Azure-Samples/ms-identity-python-desktop.git
 ```
 
 Go to the `"1-Call-MsGraph-WithDeviceCodeFlow"` folder
@@ -57,65 +57,28 @@ Go to the `"1-Call-MsGraph-WithDeviceCodeFlow"` folder
 cd "1-Call-MsGraph-WithDeviceCodeFlow"
 ```
 
-or download and exact the repository .zip file.
+### Step 2:  Register the sample with your Azure Active Directory tenant
 
-> Given that the name of the sample is pretty long, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
-
-### Step 2:  (optional) Register the sample with your Azure Active Directory tenant
-
-Without registration, your app is multitenant.  Anybody can run the sample against that app entry.  There is one project in this sample. To register it, you can:
-
-- either follow the steps [Step 2: Register the sample with your Azure Active Directory tenant](#step-2-register-the-sample-with-your-azure-active-directory-tenant) and [Step 3:  Configure the sample to use your Azure AD tenant](#choose-the-azure-ad-tenant-where-you-want-to-create-your-applications)
-- or use PowerShell scripts that:
-  - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you
-
-If you want to use this automation:
-1. On Windows run PowerShell and navigate to the root of the cloned directory
-1. In PowerShell run:
-   ```PowerShell
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
-   ```
-1. Run the script to create your Azure AD application and configure the code of the sample application accordingly. 
-   ```PowerShell
-   .\AppCreationScripts\Configure.ps1
-   ```
-   > Other ways of running the scripts are described in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
-
-1. Run the sample
-
-   You'll need to install the dependencies using pip as follows:
-  
-   ```Shell
-    pip install -r requirements.txt
-    ```
-
-    Run `device_flow_sample.py` with the parameters for the app:
-
-   ```Shell
-   python device_flow_sample.py parameters.json
-   ```
-
-If you don't want to use this automation, follow the steps below
+Some registration is required for Microsoft to act as an authority for your application.
 
 #### Choose the Azure AD tenant where you want to create your applications
 
-As a first step you'll need to:
+1. Sign in to the [Azure portal](https://portal.azure.com).
+> If your account is present in more than one Azure AD tenant, select `Directory + Subscription`, which is an icon of a notebook with a filter next to the alert icon, and switch your portal session to the desired Azure AD tenant.
+2. Select **Azure Active Directory** from the left nav.
+3. Select **App registrations** from the new nav blade.
 
-1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
-1. If your account is present in more than one Azure AD tenant, select `Directory + Subscription` at the top right corner in the menu on top of the page, and switch your portal session to the desired Azure AD tenant.
-1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**.
-
-#### Register the client app (active-directory-dotnet-deviceprofile)
+#### Register the client app
 
 1. In **App registrations** page, select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
    - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `device-code-sample`.
-   - In the **Supported account types** section, select **Accounts in any organizational directory**.
+   - In the **Supported account types** section, select the last option **Accounts in any organizational directory and personal Microsoft accounts**.
+   - Device Code Flow disables the need for a redirect URI. Leave it blank.
 1. Select **Register** to create the application.
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure your app.
-1. In the list of pages for the app, select **Manifest**, and:
-   - In the manifest editor, set the ``allowPublicClient`` property to **true** 
-   - Select **Save** in the bar above the manifest editor.
+1. On the app **Overview** page, find the **Application (client) ID** value and copy it to your *parameters.json* file's *client_id* entry.
+1. In **Authentication* set the Default Client Type to `Yes` and Save.
+  
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
    - Ensure that the **Microsoft APIs** tab is selected
@@ -129,34 +92,26 @@ As a first step you'll need to:
    requested permissions for all account in the tenant.
    You need to be an Azure AD tenant admin to do this.
 
-### Step 3:  Configure the sample to use your Azure AD tenant
-
-In the steps below, "ClientID" is the same as "Application ID" or "AppId".
-
-Open the parameters.json file
-
-#### Configure the client project
-
-> Note: if you used the setup scripts, the changes below will have been applied for you
-
-1. Open the `parameters.json` file
-1. Find the string key `organizations` in the `authority` variable and replace the existing value with your Azure AD tenant name.
-1. Find the string key `your_client_id` and replace the existing value with the application ID (clientId) of the `device-code-sample` application copied from the Azure portal.
-1. (Optional) Find the line where `Tenant` is set and replace the existing value with your tenant ID.
-
-### Step 4: Run the sample
+### Step 3: Run the sample
 
 You'll need to install the dependencies using pip as follows:
   
 ```Shell
+pip install msal requests
+```
+
+Start the application, follow the instructions and use a browser to authenticate. The profile for the user you log in with will display in the console.
+
+```Shell
+python device_flow_sample.py parameters.json
+```
+If the sample fails to run or is outdated, you can try installing the version specific dependencies from requirements.txt.
+
+```Shell
 pip install -r requirements.txt
 ```
 
-Start the application, it will display some Json string containing the users in the tenant.
-
-```Shell
-python confidential_client_secret_sample.py parameters.json
-```
+If that doesn't fix the issue, ensure that your parameters.json is correct and saved.
 
 ## About the code
 
