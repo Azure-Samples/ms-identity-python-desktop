@@ -117,10 +117,8 @@ If that doesn't fix the issue, ensure that your parameters.json is correct and s
 
 The relevant code for this sample is in the `device_code_sample.py` file. The steps are:
 
-1. Create the MSAL confidential client application.
+1. Create the MSAL Device Code flow application.
 
-    Important note: even if we are building a console application, it is a daemon, and therefore a confidential client application, as it does not
-    access Web APIs on behalf of a user, but on its own application behalf.
 
     ```Python
     app = msal.PublicClientApplication(
@@ -151,7 +149,7 @@ The relevant code for this sample is in the `device_code_sample.py` file. The st
 
 4. Call the API
 
-    In that case calling "https://graph.microsoft.com/v1.0/users" with the access token as a bearer token.
+    In that case calling "https://graph.microsoft.com/v1.0/me" with the access token as a bearer token.
 
     ```Python
     if "access_token" in result:
