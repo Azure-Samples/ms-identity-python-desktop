@@ -77,7 +77,8 @@ Some registration is required for Microsoft to act as an authority for your appl
    - Device Code Flow disables the need for a redirect URI. Leave it blank.
 1. Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and copy it to your *parameters.json* file's *client_id* entry.
-1. In **Authentication* set the Default Client Type to `Yes` and Save.
+1. In **Authentication* select the recommended Redirect URIs for public clients.
+1. Then set the Default Client Type to `Yes` and Save.
   
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
