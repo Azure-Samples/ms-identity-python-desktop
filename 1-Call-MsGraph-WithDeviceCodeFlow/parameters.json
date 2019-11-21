@@ -1,6 +1,6 @@
 {
     "authority": "https://login.microsoftonline.com/common",
-    "client_id": "c911c8a1-6a56-4e48-aa9e-d7ae531882d7",
+    "client_id": "enter your Application (Client) Id",
     "scope": ["User.Read"],
     "endpoint": "https://graph.microsoft.com/v1.0/me"
 }
