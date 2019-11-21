@@ -6,27 +6,27 @@ languages:
 products:
   - azure-active-directory
   - office-ms-graph
-description: "Python daemon console app using MSAL Python to get an access token and call Microsoft Graph (client secret variation)."
+description: "Python app using MSAL Python to get an access token and call Microsoft Graph."
 ---
 
-# A simple Python daemon console application calling Microsoft Graph with its own identity (client certificate variation)
+# A simple Python application calling Microsoft Graph with a token acquired by  a username and password
 
 ## About this sample
 
 ### Overview
 
-This sample application shows how to use the [Microsoft identity platform endpoint](http://aka.ms/aadv2) to access the data of Microsoft business customers in a long-running, non-interactive process.  It uses the [OAuth 2 client credentials grant](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow) to acquire an access token, which can be used to call the [Microsoft Graph](https://graph.microsoft.io) and access organizational data.
+This sample application shows how to use the [Microsoft identity platform endpoint](http://aka.ms/aadv2) to access the data of Microsoft customers. 
 
-The app is a Python Console application. It gets the list of users in an Azure AD tenant by using `Microsoft Authentication Library (MSAL) for Python` to acquire a token.
+The app is a Python Console application. It displays the organizational user's profile information. The user is hardcoding a username and password into the configuration to accomodate legacy processes.  
 
 ## Scenario
 
 The console application:
 
 - gets a token from microsoft identity platform with a username and password
-- and then calls the Microsoft Graph /users endpoint to get the list of user, which it then displays (as Json blob)
+- calls the Microsoft Graph /me endpoint to get a profile
 
->>>The username password flow samples are provided to satisfy specific niche, legacy purposes.  This flow is not recommended for use.
+>>>The username password flow samples are provided to satisfy specific niche, legacy purposes.  This flow is not recommended for use. This flow is banned for personal accounts.
 
 ## How to run this sample
 
@@ -42,81 +42,47 @@ From your shell or command line:
 ```Shell
 git clone https://github.com/Azure-Samples/ms-identity-python.git
 ```
-
 Go to the `"2-Call-MsGraph-WithUsernamePassword"` folder
 
 ```Shell
 cd 2-Call-MsGraph-WithUsernamePassword
 ```
 
-or download and extract the repository .zip file.
-
-> Given that the name of the sample is pretty long, you might want to clone it in a folder close to the root of your hard drive, to avoid file size limitations on Windows.
-
 ### Step 2:  Register the sample with your Azure Active Directory tenant
 
-There is one project in this sample. To register it, you can:
-
-- either follow the steps [Step 2: Register the sample with your Azure Active Directory tenant](#step-2-register-the-sample-with-your-azure-active-directory-tenant) and [Step 3:  Configure the sample to use your Azure AD tenant](#choose-the-azure-ad-tenant-where-you-want-to-create-your-applications)
-- or use PowerShell scripts that:
-  - **automatically** creates the Azure AD applications and related objects (passwords, permissions, dependencies) for you
-  - modify the Visual Studio projects' configuration files.
-
-If you want to use this automation:
-1. On Windows run PowerShell and navigate to the root of the cloned directory
-1. In PowerShell run:
-   ```PowerShell
-   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
-   ```
-1. Run the script to create your Azure AD application and configure the code of the sample application accordingly. 
-   ```PowerShell
-   .\AppCreationScripts\Configure.ps1
-   ```
-   > Other ways of running the scripts are described in [App Creation Scripts](./AppCreationScripts/AppCreationScripts.md)
-
-1. Run the sample
-   You'll need to install the dependencies using pip as follows:
-  
-   ```Shell
-    pip install -r requirements.txt
-    ```
-
-    Run `username_password_sample.py` with the parameters for the app:
-
-   ```Shell
-   python username_password_sample.py parameters.json
-   ```
-
-If you don't want to use this automation, follow the steps below:
+Some registration is required for Microsoft to act as an authority for your application.
 
 #### Choose the Azure AD tenant where you want to create your applications
 
-As a first step you'll need to:
+1. Sign in to the [Azure portal](https://portal.azure.com).
+> If your account is present in more than one Azure AD tenant, select `Directory + Subscription`, which is an icon of a notebook with a filter next to the alert icon, and switch your portal session to the desired Azure AD tenant.
+2. Select **Azure Active Directory** from the left nav.
+3. Select **App registrations** from the new nav blade.
 
-1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account or a personal Microsoft account.
-1. If your account is present in more than one Azure AD tenant, select `Directory + Subscription` at the top right corner in the menu on top of the page, and switch your portal session to the desired Azure AD tenant.
-1. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**.
+#### Register the client app
 
-#### Register the client app (console)
-
-1. Navigate to the Microsoft identity platform for developers [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) page.
-1. Select **New registration**.
-   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `daemon-console`.
-   - In the **Supported account types** section, select **Accounts in this organizational directory only ({tenant name})**.
-   - Select **Register** to create the application.
-1. On the app **Overview** page, find the **Application (client) ID** value and record it for later. You'll need it to configure the Visual Studio configuration file for this project.
-
+1. In **App registrations** page, select **New registration**.
+1. When the **Register an application page** appears, enter your application's registration information:
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `device-code-sample`.
+   - In the **Supported account types** section, select any option.
+   > This flow will not work for personal accounts, however you can configure one app and use this flow just for an organizational user. If in doubt just pick the first option.
+   - Device Code Flow disables the need for a redirect URI. Leave it blank.
+1. Select **Register** to create the application.
+1. On the app **Overview** page, find the **Application (client) ID** value and copy it to your *parameters.json* file's *client_id* entry.
+1. In **Authentication* select the recommended Redirect URIs for public clients.
+1. Then set the Default Client Type to `Yes` and Save.
+  
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
    - Ensure that the **Microsoft APIs** tab is selected
    - In the *Commonly used Microsoft APIs* section, click on **Microsoft Graph**
-   - In the **Application permissions** section, ensure that the right permissions are checked: **User.Read.All**
+   - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**, **User.ReadBasic.All**. Use the search box if necessary.
    - Select the **Add permissions** button
 
-1. At this stage permissions are assigned correctly but the client app does not allow interaction.
-   Therefore no consent can be presented via a UI and accepted to use the service app.
+1. Permissions are now assigned correctly, but the client app does not yet allow interaction. 
+   
    Click the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the
-   requested permissions for all account in the tenant.
+   requested permissions for all accounts in the tenant.
    You need to be an Azure AD tenant admin to do this.
 
 ### Step 3:  Configure the sample to use your Azure AD tenant
@@ -126,8 +92,6 @@ In the steps below, "ClientID" is the same as "Application ID" or "AppId".
 Open the `parameters.json` file
 
 #### Configure the client project
-
-> Note: if you used the setup scripts, the changes below will have been applied for you
 
 1. Open the `parameters.json` file
 1. Find the string key `organizations` in the `authority` variable and replace the existing value with your Azure AD tenant name.

@@ -1,23 +1,8 @@
 {
-
     "authority": "https://login.microsoftonline.com/organizations",
-
-    "client_id": "your_client_id",
-
-    "username": "your_username@your_tenant.com",
-
-    "password": "This is a sample only. You better NOT persist your password.",
-
-    "scope": ["User.ReadBasic.All"],
-
-        // You can find the other permission names from this document
-
-        // https://docs.microsoft.com/en-us/graph/permissions-reference
-
-    "endpoint": "https://graph.microsoft.com/v1.0/users"
-
-        // You can find more Microsoft Graph API endpoints from Graph Explorer
-
-        // https://developer.microsoft.com/en-us/graph/graph-explorer
-
+    "client_id": "Application (Client) Id",
+    "username": "user@organization.com",
+    "password": "password",
+    "scope": ["User.Read"],
+    "endpoint": "https://graph.microsoft.com/v1.0/me"
 }
