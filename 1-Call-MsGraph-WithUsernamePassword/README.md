@@ -9,24 +9,24 @@ products:
 description: "Python app using MSAL Python to get an access token and call Microsoft Graph."
 ---
 
-# A simple Python application calling Microsoft Graph with a token acquired by  a username and password
+# A simple Python application calling Microsoft Graph with a token acquired by a username and password
 
 ## About this sample
 
 ### Overview
 
-This sample application shows how to use the [Microsoft identity platform endpoint](http://aka.ms/aadv2) to access the data of Microsoft customers. 
+This sample application shows how to use the [Microsoft identity platform endpoint](http://aka.ms/aadv2) to access the data of Microsoft customers.
 
-The app is a Python Console application. It displays the organizational user's profile information. The user is hardcoding a username and password into the configuration to accomodate legacy processes.  
+The app is a Python Desktop Console application. It displays the users in the organizational tenant. The user is hardcoding a username and password into the configuration to accommodate legacy processes.  
 
 ## Scenario
 
 The console application:
 
-- gets a token from microsoft identity platform with a username and password
-- calls the Microsoft Graph /me endpoint to get a profile
+- gets a token from Microsoft identity platform with a username and password
+- calls the Microsoft Graph /users endpoint to get a list of users in the tenant
 
->>>The username password flow samples are provided to satisfy specific niche, legacy purposes.  This flow is not recommended for use. This flow is banned for personal accounts.
+> The username password flow samples are provided to satisfy specific niche, legacy purposes.  This flow is **not recommended** for use. This flow is banned for personal accounts.
 
 ## How to run this sample
 
@@ -40,12 +40,12 @@ To run this sample, you'll need:
 From your shell or command line:
 
 ```Shell
-git clone https://github.com/Azure-Samples/ms-identity-python.git
+git clone https://github.com/Azure-Samples/ms-identity-python-desktop.git
 ```
-Go to the `"2-Call-MsGraph-WithUsernamePassword"` folder
+Go to the `"1-Call-MsGraph-WithUsernamePassword"` folder
 
 ```Shell
-cd 2-Call-MsGraph-WithUsernamePassword
+cd 1-Call-MsGraph-WithUsernamePassword
 ```
 
 ### Step 2:  Register the sample with your Azure Active Directory tenant
@@ -63,15 +63,14 @@ Some registration is required for Microsoft to act as an authority for your appl
 
 1. In **App registrations** page, select **New registration**.
 1. When the **Register an application page** appears, enter your application's registration information:
-   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `device-code-sample`.
+   - In the **Name** section, enter a meaningful application name that will be displayed to users of the app, for example `desktop-sample`.
    - In the **Supported account types** section, select any option.
    > This flow will not work for personal accounts, however you can configure one app and use this flow just for an organizational user. If in doubt just pick the first option.
-   - Device Code Flow disables the need for a redirect URI. Leave it blank.
 1. Select **Register** to create the application.
 1. On the app **Overview** page, find the **Application (client) ID** value and copy it to your *parameters.json* file's *client_id* entry.
 1. In **Authentication* select the recommended Redirect URIs for public clients.
 1. Then set the Default Client Type to `Yes` and Save.
-  
+
 1. In the list of pages for the app, select **API permissions**
    - Click the **Add a permission** button and then,
    - Ensure that the **Microsoft APIs** tab is selected
@@ -79,8 +78,8 @@ Some registration is required for Microsoft to act as an authority for your appl
    - In the **Delegated permissions** section, ensure that the right permissions are checked: **User.Read**, **User.ReadBasic.All**. Use the search box if necessary.
    - Select the **Add permissions** button
 
-1. Permissions are now assigned correctly, but the client app does not yet allow interaction. 
-   
+1. Permissions are now assigned correctly, but the client app does not allow interaction. Therefore no consent can be presented via a UI and accepted to use the service.
+
    Click the **Grant/revoke admin consent for {tenant}** button, and then select **Yes** when you are asked if you want to grant consent for the
    requested permissions for all accounts in the tenant.
    You need to be an Azure AD tenant admin to do this.
@@ -95,53 +94,46 @@ Open the `parameters.json` file
 
 1. Open the `parameters.json` file
 1. Find the string key `organizations` in the `authority` variable and replace the existing value with your Azure AD tenant name.
-1. Find the string key `your_client_id` and replace the existing value with the application ID (clientId) of the `daemon-console` application copied from the Azure portal.
+1. Find the string key `your_client_id` and replace the existing value with the application ID (clientId) of the `desktop-sample` application copied from the Azure portal.
 1. Set the username and password as you have configured.
 
 ### Step 4: Run the sample
 
 You'll need to install the dependencies using pip as follows:
-  
+
 ```Shell
 pip install -r requirements.txt
 ```
 
-Start the application, it will display some Json string containing the users in the tenant.
+Start the application by running below command. It will display some Json string containing the users in the tenant.
 
 ```Shell
-python confidential_client_certificate_sample.py parameters.json
+python username_password_sample.py parameters.json
 ```
 
 ## About the code
 
-The relevant code for this sample is in the `confidential_client_secret_sample.py` file. The steps are:
+The relevant code for this sample is in the `username_password_sample.py` file. The steps are:
 
-1. Create the MSAL confidential client application.
-
-    Important note: even if we are building a console application, it is a daemon, and therefore a confidential client application, as it does not
-    access Web APIs on behalf of a user, but on its own application behalf.
+1. Create the MSAL public client application.
 
     ```Python
-app = msal.PublicClientApplication(
-    config["client_id"], authority=config["authority"],
-    )
+    app = msal.PublicClientApplication(
+        config["client_id"], authority=config["authority"],
+        )
     ```
 
-1. Define the scopes.
+1. The scopes are defined in the parameters.json file.
 
-   Specific to client credentials, you don't specify, in the code, the individual scopes you want to access. You have statically declared
-   them during the application registration step. Therefore the only possible scope is "resource/.default" (here "https://graph.microsoft.com/.default")
-   which means "the static permissions defined in the application".
-
-   In the parameters.json file you have:
+   In the default parameters.json file you have:
 
     ```JSon
-    "scope": [ "https://graph.microsoft.com/.default" ],
+    "scope": ["User.ReadBasic.All"],
     ```
 1. Check the cache.  
-```Python
-accounts = app.get_accounts(username=config["username"])
-```
+    ```Python
+    accounts = app.get_accounts(username=config["username"])
+    ```
 
 1. Acquire the token
 
@@ -171,10 +163,10 @@ accounts = app.get_accounts(username=config["username"])
 
 ## Troubleshooting
 
-### Did you forget to provide admin consent? This is needed for daemon apps
+### Did you forget to provide admin consent?
 
 If you get an error when calling the API `Insufficient privileges to complete the operation.`, this is because the tenant administrator has not granted permissions
-to the application. See step 6 of [Register the client app (daemon-console)](#register-the-client-app-daemon-console) above.
+to the application. See step 8 of [Register the client app](#register-the-client-app) above.
 
 You will typically see, on the output window, something like the following:
 
@@ -212,10 +204,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## More information
 
-For more information, see MSAL.NET's conceptual documentation:
+For more information, see conceptual documentation:
 
 - [Quickstart: Register an application with the Microsoft identity platform](https://docs.microsoft.com/azure/active-directory/develop/quickstart-register-app)
 - [Quickstart: Configure a client application to access web APIs](https://docs.microsoft.com/azure/active-directory/develop/quickstart-configure-app-access-web-apis)
-
-
-

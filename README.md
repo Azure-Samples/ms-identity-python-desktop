@@ -5,19 +5,20 @@ languages:
 - powershell
 products:
 - azure-active-directory
-description: "This sample demonstrates a Python daemon console app calling the Microsoft Graph that is secured using the Microsoft identity platform."
+description: "This sample demonstrates a Python desktop app calling the Microsoft Graph that is secured using the Microsoft identity platform."
 urlFragment: ms-identity-python
 ---
 
 # See sample directories
 
-<!-- 
+<!--
 Guidelines on README format: https://review.docs.microsoft.com/help/onboard/admin/samples/concepts/readme-template?branch=master
 
 Guidance on onboarding samples to docs.microsoft.com/samples: https://review.docs.microsoft.com/help/onboard/admin/samples/process/onboarding?branch=master
 
 Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
 -->
+A desktop app can perform different authentication flows based on the scenario. The samples in this repo are separated into sub-folders named by the authentication flow being used.
 
 ## Prerequisites
 
@@ -32,7 +33,7 @@ To run this sample, you'll need:
 
 ## Setup and run the sample
 
-Download and extract the repository .zip file or, from your shell or command line.
+Download and extract the repository .zip file from your shell or command line.
 
 Then, see the readme of each sub-folder to understand how to setup and run the samples, and learn key concepts.
 
