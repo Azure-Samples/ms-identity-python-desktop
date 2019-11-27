@@ -1,8 +1,0 @@
-{
-    "authority": "https://login.microsoftonline.com/organizations",
-    "client_id": "Application (Client) Id",
-    "username": "user@organization.com",
-    "password": "password",
-    "scope": ["User.Read"],
-    "endpoint": "https://graph.microsoft.com/v1.0/me"
-}
